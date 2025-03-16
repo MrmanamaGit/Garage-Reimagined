@@ -11,7 +11,7 @@ class $modify(scroll, GJGarageLayer) {
         CCSprite* m_cursorCust1 = nullptr;
         CCSprite* m_cursorCust2 = nullptr;
 
-        AxisLayout* m_layout = nullptr;
+        Ref<AxisLayout> m_layout = nullptr;
 
         CCMenu* m_iconMenu = nullptr;
         CCArray* m_iconArray = nullptr;
