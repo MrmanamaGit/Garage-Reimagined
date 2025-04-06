@@ -43,6 +43,7 @@ bool garage::init() {
         ->setAxisReverse(true)
     );
 
+	/*
     auto moreIconsBtn = CCMenuItemSpriteExtra::create(
         CCSprite::createWithSpriteFrameName("GJ_checkOn_001.png"),
         this,
@@ -57,6 +58,7 @@ bool garage::init() {
     } else {
         moreIconsBtn->setVisible(false);
     }
+ 	*/
 
     categoryMenu->setPosition(winSize.width / 2.84, winSize.height / 2);
     categoryMenu->setContentWidth(0);
