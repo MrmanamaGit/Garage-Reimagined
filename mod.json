@@ -1,23 +1,33 @@
 {
 	"geode": "4.3.1",
+
 	"gd": {
 		"win": "2.2074",
 		"android": "2.2074",
-		"mac": "2.2074"
+		"mac": "2.2074",
+		"ios": "2.2074"
 	},
+
 	"id": "mrmanama.garage-reimagined",
 	"name": "Garage Reimagined",
-	"version": "v1.0.1",
+	"version": "v1.0.2",
 	"developer": "Mrmanama",
 	"description": "A mod that revamps the Garage.",
-	"tags": ["enhancement", "interface", "offline"],
+
+	"tags": [
+		"enhancement", 
+		"interface", 
+		"offline"
+	],
+
 	"dependencies": [
 		{
 			"id": "geode.node-ids",
-			"version": ">=1.18.0",
+			"version": ">=v1.17.0",
 			"importance": "required"
 		}
 	],
+		
 
 	"incompatibilities": [
 		{
