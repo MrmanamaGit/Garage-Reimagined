@@ -30,7 +30,7 @@ class garage : public geode::Modify<garage, GJGarageLayer> {
         void onShipFire(CCObject* sender);
         void onAnimation(CCObject* sender);
 
-        void onMoreIcons(CCObject* sender);
+        // void onMoreIcons(CCObject* sender);
 
         void onSettings(CCObject* sender) {
             openSettingsPopup(Mod::get());
