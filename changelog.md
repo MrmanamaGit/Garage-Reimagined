@@ -5,5 +5,4 @@
 - Accepted pr from RayDeeUx.
 
 # 1.0.2
-- IOS support
 - Code rework/cleanup
