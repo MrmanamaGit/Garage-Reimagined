@@ -4,13 +4,12 @@
 	"gd": {
 		"win": "2.2074",
 		"android": "2.2074",
-		"mac": "2.2074",
-		"ios": "2.2074"
+		"mac": "2.2074"
 	},
 
 	"id": "mrmanama.garage-reimagined",
 	"name": "Garage Reimagined",
-	"version": "v1.0.2",
+	"version": "v1.1.0",
 	"developer": "Mrmanama",
 	"description": "A mod that revamps the Garage.",
 
@@ -20,27 +19,17 @@
 		"offline"
 	],
 
-	"dependencies": [
-		{
-			"id": "geode.node-ids",
+	"dependencies": {
+		"geode.node-ids": {
 			"version": ">=v1.17.0",
 			"importance": "required"
-		}
-	],
-		
-
-	"incompatibilities": [
-		{
-			"id": "weebify.separate_dual_icons",
-			"version": "*",
-			"importance": "conflicting"
 		},
-		{
-			"id": "hiimjustin000.more_icons",
-			"version": "*",
-			"importance": "conflicting"
+		"hiimjustin000.more_icons": {
+			"version": ">=v1.0.0",
+			"importance": "suggested"
+
 		}
-	],
+	},
 
 	"settings": {
 		"icon-colours": {

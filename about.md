@@ -8,9 +8,9 @@ An enhancement mod that changes the layout of the original GD garage.
 - All buttons have been organised/remade to look better.
 
 # Compatibilities:
-- <cg>Better Icon Randomiser</c> by Hiimjasmine00
-- <cr>Seperate Dual Icons</c> by Weebify (Doesn't work properly + Weird UI)
-- <cr>More Icons</c> by Hiimjasmine00 (Doesn't work properly)
+- <cg>Seperate Dual Icons</c> by Weebify (Doesn't work properly + Weird UI)
+- <cg>More Icons</c> by Hiimjasmine00 (Doesn't work properly)
 - <cr>Garage Plus (Seperate mods too)</c> by OmgRod (Weird UI)
+- <cr>Better Icon Randomiser</c> by Hiimjasmine00
 
-I will work on making these mods compatible soon.
+I will work on making all mods compatible soon.

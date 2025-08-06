@@ -1,4 +1,5 @@
-#include "garageLayer.hpp"
+#include "../classes.hpp"
+#include "hiimjustin000.more_icons/include/MoreIcons.hpp"
 
 void garage::createIconPage() {
     auto gm = GameManager::get();
@@ -20,10 +21,12 @@ void garage::createIconPage() {
         icon->setScale(f->ICON_SIZE); // changes sprite scale
 
         /*
-            Icons display with player colour settings
+            Display icons with player colour settings
         */
 
         if (auto simplePlayer = icon->getChildByType<SimplePlayer*>(0)) {
+
+            simplePlayer->setTag(0);
 
             if (Mod::get()->getSettingValue<bool>("icon-colours")) {
 
@@ -115,7 +118,7 @@ void garage::createIconPage() {
         ship->updateLayout();
         items->updateLayout();
 
-        // Based on iconType
+        // Set tag based on iconType
         ship->setTag(101);
         items->setTag(100);
 
@@ -123,18 +126,16 @@ void garage::createIconPage() {
         f->m_iconMenu->addChild(items);
 
     }
-
-    f->m_iconMenu->updateLayout();
-
-    adjustScroll();
 }
 
 void garage::refreshCursor() {
     auto f = m_fields.self();
     auto gm = GameManager::get();
 
-    int currentIcon = gm->activeIconForType(m_iconType);
+    auto separateDual = Loader::get()->getLoadedMod("weebify.separate_dual_icons");
+    bool is2p = separateDual ? separateDual->getSavedValue<bool>("2pselected") : false;
 
+    // readds the cursors if they arent already added to their menus
     if (!f->m_iconMenu->getChildByID("cursor-1")) {
 
         f->m_cursorCust1 = CCSprite::createWithSpriteFrameName("GJ_select_001.png");
@@ -144,9 +145,12 @@ void garage::refreshCursor() {
         f->m_cursorCust2 = CCSprite::createWithSpriteFrameName("GJ_select_001.png");
         f->m_cursorCust2->setScale(0.65f);
         f->m_cursorCust2->setID("cursor-2");
-        f->m_cursorCust2->setVisible(false); // will be set visible when special icon is selected
         
         f->m_iconMenu->addChild(f->m_cursorCust1, 10000);
+        if (m_iconType == IconType::Special) {
+            f->m_iconMenu->getChildByTag(101)->addChild(f->m_cursorCust2, 10000);
+            f->m_cursorCust2->setVisible(false); // will be set visible when special icon is selected
+        }
 
         if (f->MORE_ICONS_ENABLED) {
             f->m_cursorMoreIcons = CCSprite::createWithSpriteFrameName("GJ_select_001.png");
@@ -154,55 +158,99 @@ void garage::refreshCursor() {
             f->m_cursorMoreIcons->setID("cursor-more-icons");
 
             f->m_moreIconsMenu->addChild(f->m_cursorMoreIcons, 10000);
+        }
+    }
 
-            if (auto target = f->m_moreIconsMenu->getChildByID(MoreIcons::activeIcon(m_iconType))) {
-                f->m_cursorMoreIcons->setPosition(target->getPosition());
+    if (f->SEPARATE_DUAL_ENABLED && is2p) {
+        f->m_cursorCust1->setColor({255,255,0});
+
+        f->m_cursorCust1->setPosition(f->m_iconMenu->getChildByTag(separateDual->getSavedValue<int>(iconTypeToStr(m_iconType)))->getPosition());
+        f->m_cursorCust1->setVisible(true);
+
+        if (f->MORE_ICONS_ENABLED) {
+            f->m_cursorMoreIcons->setVisible(false);
+
+            if (MoreIcons::activeIcon(m_iconType, true) != "") {
+                f->m_cursorMoreIcons->setColor({255,255,0});
+                f->m_cursorMoreIcons->setPosition(f->m_moreIconsMenu->getChildByID(MoreIcons::activeIcon(m_iconType, true))->getPosition());
+                f->m_cursorMoreIcons->setVisible(true);
+                f->m_cursorCust1->setVisible(false);
+            }
+
+        }
+
+        if (m_iconType == IconType::Special) {
+            f->m_cursorCust2->setColor({255,255,0});
+
+            f->m_cursorCust2->setPosition(f->m_iconMenu->getChildByTag(101)->getChildByTag(separateDual->getSavedValue<int>("shiptrail"))->getPosition());
+            f->m_cursorCust2->setVisible(true);
+        }
+
+    } else { // if separateDual isnt active or a vanilla or moreIcon icon was selected
+        int activeIconID = gm->activeIconForType(m_iconType);
+        f->m_cursorCust1->setPosition(f->m_iconMenu->getChildByTag(activeIconID)->getPosition());
+        f->m_cursorCust1->setVisible(true);
+
+        f->m_cursorCust1->setColor({0,255,255});
+
+        if (f->MORE_ICONS_ENABLED) {
+            f->m_cursorMoreIcons->setVisible(false);
+
+            if (MoreIcons::activeIcon(m_iconType) != "") {
+                f->m_cursorMoreIcons->setColor({0,255,255});
+                f->m_cursorMoreIcons->setPosition(f->m_moreIconsMenu->getChildByID(MoreIcons::activeIcon(m_iconType))->getPosition());
+                f->m_cursorMoreIcons->setVisible(true);
+                f->m_cursorCust1->setVisible(false);
+            }
+        }
+
+        if (m_iconType == IconType::Special) {
+            f->m_cursorCust2->setColor({0,255,255});
+
+            f->m_cursorCust2->setPosition(f->m_iconMenu->getChildByTag(101)->getChildByTag(gm->activeIconForType(IconType::ShipFire))->getPosition());
+            f->m_cursorCust2->setVisible(true);
+        }
+    }
+
+    // refreshes p1 and p2 icons on any change
+    if (m_iconType != IconType::DeathEffect && m_iconType != IconType::Special) {
+        if (f->MORE_ICONS_ENABLED) {
+            if (MoreIcons::activeIcon(m_iconType) != "") {
+                MoreIcons::updateSimplePlayer(m_playerObject, MoreIcons::activeIcon(m_iconType), m_iconType);
             } else {
-                f->m_cursorMoreIcons->setVisible(false);
+                m_playerObject->updatePlayerFrame(gm->activeIconForType(m_iconType), m_iconType);
+            }
+
+            if (f->SEPARATE_DUAL_ENABLED) {
+                if (MoreIcons::activeIcon(m_iconType, true) != "") {
+                    MoreIcons::updateSimplePlayer(static_cast<SimplePlayer*>(this->getChildByID("player2-icon")), MoreIcons::activeIcon(m_iconType, true), m_iconType);
+                } else {
+                    static_cast<SimplePlayer*>(this->getChildByID("player2-icon"))->updatePlayerFrame(separateDual->getSavedValue<int>(iconTypeToStr(m_iconType)), m_iconType);
+                }
+            }
+        } else {
+            m_playerObject->updatePlayerFrame(gm->activeIconForType(m_iconType), m_iconType);
+
+            if (f->SEPARATE_DUAL_ENABLED) {
+                static_cast<SimplePlayer*>(this->getChildByID("player2-icon"))->updatePlayerFrame(separateDual->getSavedValue<int>(iconTypeToStr(m_iconType)), m_iconType);
             }
         }
     }
 
-    if (f->MORE_ICONS_ENABLED) {
-        if (MoreIcons::activeIcon(m_iconType) != "") {
-            f->m_cursorMoreIcons->setVisible(true);
-            f->m_cursorCust1->setVisible(false);
-        } else {
-            f->m_cursorMoreIcons->setVisible(false);
-            f->m_cursorCust1->setVisible(true);
-        }
-    }
-
-    this->m_cursor1->setPosition({0,0});
-    this->m_cursor1->setZOrder(0);
-    this->m_cursor2->setPosition({0,0});
-    this->m_cursor2->setZOrder(0);
-
-    if (auto target = f->m_iconMenu->getChildByTag(currentIcon)) {
-
-        f->m_cursorCust1->setPosition(target->getPosition());
-
-        if (m_iconType == IconType::Special) {
-            auto secondaryTarget = f->m_iconMenu->getChildByTag(101)->getChildByTag(gm->activeIconForType(IconType::ShipFire));
-
-            f->m_iconMenu->getChildByTag(101)->addChild(f->m_cursorCust2, 10000);
-
-            f->m_cursorCust2->setPosition(secondaryTarget->getPosition());
-            f->m_cursorCust2->setVisible(true);
-        }
-
-    } else {
-
-        log::error("couldn't find active icon!");
-
-    }
+    m_playerObject->setColors(gm->colorForIdx(gm->getPlayerColor()), gm->colorForIdx(gm->getPlayerColor2()));
+    if (f->SEPARATE_DUAL_ENABLED) static_cast<SimplePlayer*>(this->getChildByID("player2-icon"))->setColors(gm->colorForIdx(separateDual->getSavedValue<int>("color1")), gm->colorForIdx(separateDual->getSavedValue<int>("color2")));
 }
 
 void garage::adjustScroll() {
     auto f = m_fields.self();
-    float moreIconMenuHeight = 0; 
+    float moreIconMenuHeight = 0.0f;
 
-    if (f->MORE_ICONS_ENABLED) moreIconMenuHeight = f->m_moreIconsMenu->getContentHeight(); // will stay 0 if More_icons isnt enabled
+    f->m_iconMenu->updateLayout();
+
+    if (f->MORE_ICONS_ENABLED) {
+        f->m_moreIconsMenu->updateLayout();
+        moreIconMenuHeight = f->m_moreIconsMenu->getContentHeight();
+    }
 
     if (f->m_iconMenu->getContentHeight() + moreIconMenuHeight >= 310) {
 
@@ -223,6 +271,6 @@ void garage::adjustScroll() {
     if (f->MORE_ICONS_ENABLED) f->m_moreIconsMenu->setPosition({f->m_scrollLayer->m_contentLayer->getContentWidth() / 2, f->m_breakline->getPositionY() - f->PADDING});
 
     f->m_scrollLayer->scrollToTop();
-
+    
     refreshCursor();
 }

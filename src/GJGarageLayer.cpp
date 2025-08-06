@@ -1,4 +1,4 @@
-#include "garageLayer.hpp"
+#include "classes.hpp"
 
 bool garage::init() {
     if (!GJGarageLayer::init()) return false;
@@ -7,10 +7,8 @@ bool garage::init() {
     auto scrollSize = CCSize{winSize.width / 2, winSize.height};
     auto f = m_fields.self();
 
-    m_navDotMenu->setVisible(false);
-
 	m_rightArrow->setPositionX(winSize.width + 25);
-    m_leftArrow->setPositionX(-25);
+    m_leftArrow->setPositionX(-50);
     this->getChildByID("select-background")->setVisible(false);
 	this->getChildByID("tap-more-hint")->setVisible(false);
 	this->getChildByID("bottom-right-corner")->setVisible(false);
@@ -30,14 +28,12 @@ bool garage::init() {
 	back->addChild(settings);
 	back->updateLayout();
 
-		/*
-			Category Menu
-		*/
+	/*
+		Category Menu
+	*/
 
 	auto categoryMenu = this->getChildByID("category-menu");
-    categoryMenu->setLayout(AxisLayout::create(Axis::Column)
-        ->setAxisReverse(true)
-    );
+    categoryMenu->setLayout(AxisLayout::create(Axis::Column)->setAxisReverse(true));
 
     categoryMenu->setPosition(winSize.width / 2.84, winSize.height / 2);
     categoryMenu->setContentWidth(0);
@@ -46,34 +42,40 @@ bool garage::init() {
 
     categoryMenu->updateLayout();
 
-		/*
-			shop button
-		*/
+	/*
+		shop button
+	*/
 
-	auto otherMenu = this->getChildByID("shards-menu");
-        
+	auto shards = this->getChildByID("shards-menu");
     this->getChildByID("top-left-menu")->setVisible(false);
 
     auto shopBtnSprite = CCSprite::create("shopBtnSprite.png"_spr);
-    shopBtnSprite->setScale(0.9f);
-
+    shopBtnSprite->setScale(0.85f);
     auto shopBtn = CCMenuItemSpriteExtra::create(
         shopBtnSprite, 
 		this,
         menu_selector(GJGarageLayer::onShop)
     );
 
-    otherMenu->addChild(shopBtn);
+    shards->addChild(shopBtn);
     shopBtn->setID("shop-button"_spr);
 
     // Fix Button layout
-    otherMenu->setPosition(40, 90);
-	otherMenu->setContentHeight(135);
-    otherMenu->updateLayout();
+    shards->setPosition(40, 90);
+	shards->setContentHeight(135);
+    shards->updateLayout();
 
-		/*
-			Player Stage
-		*/
+    auto shardsBG = CCScale9Sprite::create("square02_001.png");
+    shardsBG->setContentSize({60,210});
+    shardsBG->setScale(0.7f);
+    shardsBG->setPosition(shards->getPosition());
+    shardsBG->setOpacity(75);
+    this->addChild(shardsBG);
+    shardsBG->setID("other-BG");
+
+	/*
+		Player Stage
+	*/
 
     m_playerObject->setPosition({categoryMenu->getPositionX() / 2, 200});
     this->getChildByID("floor-line")->setPosition(categoryMenu->getPositionX() / 2, 175);
@@ -85,7 +87,7 @@ bool garage::init() {
 
 	} else if (auto nameHint = this->getChildByID("username-hint")) {
 
-		nameHint->setPosition({});
+		nameHint->setPosition({0,0});
 
 	}
 
@@ -94,9 +96,9 @@ bool garage::init() {
 	m_usernameInput->getChildByType<CCLabelBMFont*>(0)->setPosition(m_usernameInput->getContentSize() / 2);
     m_usernameInput->setScale(0.8f);
 
-		/*
-			Stats
-		*/
+	/*
+		Stats
+	*/
 
 	this->getChildByID("stars-icon")->setPosition(150, 145);
 	this->getChildByID("stars-label")->setPosition(140, 145);
@@ -119,9 +121,9 @@ bool garage::init() {
 	this->getChildByID("diamond-shards-icon")->setPosition(150, 55);
 	this->getChildByID("diamond-shards-label")->setPosition(140, 55);
 
-    auto layout = AxisLayout::create();
-    layout->setGrowCrossAxis(true);
-    layout->setGap(7.5);
+    auto gridLayout = AxisLayout::create();
+    gridLayout->setGrowCrossAxis(true);
+    gridLayout->setGap(7.5);
 
     auto mainLayer = CCLayer::create();
     mainLayer->setPosition(winSize.width / 2, winSize.height / 2);
@@ -135,17 +137,19 @@ bool garage::init() {
     f->m_scrollBar = Scrollbar::create(f->m_scrollLayer);
     f->m_scrollBar->setPosition({winSize.width - (winSize.width / 35), winSize.height / 2});
 
-    /*
-        Creates icon menu
-        and more icons menu (if more icons are active)
-    */
+    auto BG = CCScale9Sprite::create("square02_001.png");
+    BG->setPosition(f->m_scrollLayer->getPosition());
+    BG->setContentSize(f->m_scrollLayer->getContentSize() + CCSize{10,0});
+    BG->setOpacity(75);
+    mainLayer->addChild(BG);
 
     f->m_iconMenu = CCMenu::create();
-    f->m_iconMenu->setLayout(layout);
+    f->m_iconMenu->setLayout(gridLayout);
     f->m_iconMenu->setAnchorPoint({0.5, 1});
     f->m_iconMenu->setContentSize({f->m_scrollLayer->getContentWidth() - 10, 0});
     f->m_iconMenu->setID("icon-menu");
 
+    createIconPage(); // sets up page
     ADD_TO_SCROLL(f->m_iconMenu);
 
     f->m_breakline = CCLayerColor::create({0, 0, 0, 100}, f->m_scrollLayer->m_contentLayer->getContentWidth(), 1);
@@ -156,31 +160,41 @@ bool garage::init() {
 
         f->m_moreIconsMenu = CCMenu::create();
         f->m_moreIconsMenu->setAnchorPoint({0.5,1});
-        f->m_moreIconsMenu->setLayout(AxisLayout::create()
-            ->setGrowCrossAxis(true)
-            ->setGap(7.5)
-        );
-
+        f->m_moreIconsMenu->setLayout(gridLayout);
         f->m_moreIconsMenu->setContentSize({f->m_scrollLayer->getContentWidth() - 10, 0});
         f->m_moreIconsMenu->setID("more-icons");
-
+    
         setupMoreIcons(); // sets up more icons
-        MoreIcons::updateSimplePlayer(m_playerObject, m_iconType, Loader::get()->isModLoaded("weebify.separate_dual_icons"));
         ADD_TO_SCROLL(f->m_moreIconsMenu);
 
-    } else {
-        m_playerObject->updatePlayerFrame(GameManager::get()->activeIconForType(IconType::Cube), IconType::Cube);
     }
 
-    createIconPage(); // sets up page
+    // UI change when Separate dual icons are enabled
+    if (f->SEPARATE_DUAL_ENABLED) {
+        m_playerObject->setPosition({60,195.5});
+        auto p2 = this->getChildByID("player2-icon");
+        p2->setPosition(120,195.5f);
+        m_playerObject->setScale(1.3f);
+        p2->setScale(1.3f);
 
-    auto background = CCScale9Sprite::create("square02_001.png");
-    background->setPosition(f->m_scrollLayer->getPosition());
-    background->setContentSize(f->m_scrollLayer->getContentSize() + CCSize{10,0});
-    background->setOpacity(75);
-    mainLayer->addChild(background);
+        auto playerBtnMenu = this->getChildByID("player-buttons-menu");
 
-    m_iconSelection->setVisible(false);
+        auto p1Btn = static_cast<CCMenuItemSpriteExtra*>(playerBtnMenu->getChildByID("player1-button"));
+        p1Btn->setPosition(m_playerObject->getPosition());
+        p1Btn->setTarget(this, menu_selector(garage::on2pSwitch));
+
+        auto p2Btn = static_cast<CCMenuItemSpriteExtra*>(playerBtnMenu->getChildByID("player2-button"));
+        p2Btn->setPosition(p2->getPosition());
+        p2Btn->setTarget(this, menu_selector(garage::on2pSwitch));
+
+        auto switch2pIcnBtn = static_cast<CCMenuItemSpriteExtra*>(shards->getChildByID("swap-2p-button"));
+        switch2pIcnBtn->setTarget(this, menu_selector(garage::swapPlayerIcons));
+
+        this->getChildByID("arrow-1")->setPosition(25.5f,195.5f);
+        this->getChildByID("arrow-2")->setPosition(155.5f,195.5f);
+    }
+
+    adjustScroll();
 
     this->addChild(mainLayer);
     mainLayer->addChild(f->m_scrollLayer);
@@ -188,12 +202,23 @@ bool garage::init() {
     
     mainLayer->setID("content"_spr);
 
+    if (auto node = this->getChildByID("hiimjustin000.more_icons/icon-selection-bar")) node->setVisible(false);
+    if (auto node = static_cast<CCMenu*>(this->getChildByID("hiimjustin000.more_icons/navdot-menu"))) node->setOpacity(false);
+
+    m_iconSelection->setVisible(false);
+    m_navDotMenu->setVisible(false);
+    m_cursor1->setVisible(false);
+    m_cursor2->setVisible(false);
+
     return true;
 }
 
 void garage::onSelectTab(CCObject* sender) {
     auto toggler = static_cast<CCMenuItemToggler*>(sender);
     auto icontype = toggler ? toggler->getTag() : -1;
+    auto separateDual = Loader::get()->getLoadedMod("weebify.separate_dual_icons");
+
+    auto f = m_fields.self();
 
     auto prev = static_cast<CCMenuItemToggler*>(toggler->getParent()->getChildByTag(as<int>(m_iconType)));
     prev->toggle(false);
@@ -201,9 +226,15 @@ void garage::onSelectTab(CCObject* sender) {
 
     m_iconType = as<IconType>(icontype);
 
+    if (f->SEPARATE_DUAL_ENABLED) {
+        separateDual->setSavedValue("lastmode", icontype);
+        separateDual->setSavedValue("lasttype", icontype);
+    }
+    
     toggler->toggle(true);
     toggler->setEnabled(false);
 
-    if (m_fields->MORE_ICONS_ENABLED) setupMoreIcons(); // sets up more icons
+    if (f->MORE_ICONS_ENABLED) setupMoreIcons(); // sets up more icons
     createIconPage(); // Changes page
+    adjustScroll();
 }
