@@ -201,8 +201,8 @@ bool garage::init() {
     mainLayer->addChild(f->m_scrollBar);
     
     mainLayer->setID("content"_spr);
-
-    this->schedule(schedule_selector(garage::hideOverlaps),0,kCCRepeatForever,0);
+    
+    this->schedule((cocos2d::SEL_SCHEDULE)(&garage::hideOverlaps),0,kCCRepeatForever,0);
 
     return true;
 }
@@ -214,11 +214,11 @@ void garage::onSelectTab(CCObject* sender) {
 
     auto f = m_fields.self();
 
-    auto prev = static_cast<CCMenuItemToggler*>(toggler->getParent()->getChildByTag(as<int>(m_iconType)));
+    auto prev = static_cast<CCMenuItemToggler*>(toggler->getParent()->getChildByTag(static_cast<int>(m_iconType)));
     prev->toggle(false);
     prev->setEnabled(true);
 
-    m_iconType = as<IconType>(icontype);
+    m_iconType = static_cast<IconType>(icontype);
 
     if (f->SEPARATE_DUAL_ENABLED) {
         separateDual->setSavedValue("lastmode", icontype);

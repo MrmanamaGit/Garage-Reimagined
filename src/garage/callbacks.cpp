@@ -108,7 +108,7 @@ void garage::onAnimation(CCObject* sender) {
     auto f = m_fields.self();
 
     // enables animation if the animation is set to a valid ID and if its also unlocked
-    if (item && itemID != -1 && gm->isIconUnlocked(itemID, gm->unlockTypeToIconType(as<int>(UnlockType::GJItem)))) {
+    if (item && itemID != -1 && gm->isIconUnlocked(itemID, gm->unlockTypeToIconType(static_cast<int>(UnlockType::GJItem)))) {
 
         gsm->toggleEnableItem(UnlockType::GJItem, itemID, !gsm->isItemEnabled(UnlockType::GJItem,itemID));
         item->getChildByType<GJItemIcon*>(0)->toggleEnabledState(gsm->isItemEnabled(UnlockType::GJItem,itemID));
