@@ -202,13 +202,7 @@ bool garage::init() {
     
     mainLayer->setID("content"_spr);
 
-    if (auto node = this->getChildByID("hiimjustin000.more_icons/icon-selection-bar")) node->setVisible(false);
-    if (auto node = static_cast<CCMenu*>(this->getChildByID("hiimjustin000.more_icons/navdot-menu"))) node->setOpacity(false);
-
-    m_iconSelection->setVisible(false);
-    m_navDotMenu->setVisible(false);
-    m_cursor1->setVisible(false);
-    m_cursor2->setVisible(false);
+    this->schedule(schedule_selector(garage::hideOverlaps),0,kCCRepeatForever,0);
 
     return true;
 }
