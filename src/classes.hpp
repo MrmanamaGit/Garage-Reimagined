@@ -53,7 +53,7 @@ class garage : public geode::Modify<garage, GJGarageLayer> {
         
         void createIconPage();
 
-        void hideOverlaps(CCObject*) {
+        void hideOverlaps() {
             if (auto node = this->getChildByID("hiimjustin000.more_icons/icon-selection-bar")) node->setVisible(false);
             if (auto node = static_cast<CCMenu*>(this->getChildByID("hiimjustin000.more_icons/navdot-menu"))) node->setOpacity(false);
 

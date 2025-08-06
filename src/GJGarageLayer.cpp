@@ -202,7 +202,7 @@ bool garage::init() {
     
     mainLayer->setID("content"_spr);
     
-    this->schedule((cocos2d::SEL_SCHEDULE)(&garage::hideOverlaps),0,kCCRepeatForever,0);
+    this->schedule((cocos2d::SEL_SCHEDULE)&garage::hideOverlaps,0,kCCRepeatForever,0);
 
     return true;
 }
