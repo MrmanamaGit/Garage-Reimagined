@@ -201,8 +201,10 @@ bool garage::init() {
     mainLayer->addChild(f->m_scrollBar);
     
     mainLayer->setID("content"_spr);
+
+    CCScheduler::get()->scheduleSelector(schedule_selector(garage::hideOverlaps),this,0,false);
     
-    this->schedule(schedule_selector(&garage::hideOverlaps),0,kCCRepeatForever,0);
+    //this->schedule(schedule_selector(garage::hideOverlaps),0,kCCRepeatForever,0);
 
     return true;
 }
