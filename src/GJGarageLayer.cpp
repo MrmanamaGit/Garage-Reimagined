@@ -204,9 +204,20 @@ bool garage::init() {
 
     CCScheduler::get()->scheduleSelector(schedule_selector(garage::hideOverlaps),this,0,false);
     
-    //this->schedule(schedule_selector(garage::hideOverlaps),0,kCCRepeatForever,0);
+//this->schedule(schedule_selector(garage::hideOverlaps),0,kCCRepeatForever,0);
 
-    return true;
+return true;
+}
+
+// Change the signature of hideOverlaps to accept a float parameter
+void garage::hideOverlaps(float dt) {
+    if (auto node = this->getChildByID("hiimjustin000.more_icons/icon-selection-bar")) node->setVisible(false);
+    if (auto node = static_cast<CCMenu*>(this->getChildByID("hiimjustin000.more_icons/navdot-menu"))) node->setOpacity(false);
+
+    m_iconSelection->setVisible(false);
+    m_navDotMenu->setVisible(false);
+    m_cursor1->setVisible(false);
+    m_cursor2->setVisible(false);
 }
 
 void garage::onSelectTab(CCObject* sender) {
