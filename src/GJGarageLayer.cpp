@@ -193,8 +193,8 @@ bool garage::init() {
         auto switch2pIcnBtn = static_cast<CCMenuItemSpriteExtra*>(shards->getChildByID("swap-2p-button"));
         switch2pIcnBtn->setTarget(this, menu_selector(garage::swapPlayerIcons));
 
-        this->getChildByID("arrow-1")->setPosition(25.5f,195.5f);
-        this->getChildByID("arrow-2")->setPosition(155.5f,195.5f);
+        this->getChildByID("arrow-1")->setPosition(m_playerObject->getPositionX() - 30, m_playerObject->getPositionY());
+        this->getChildByID("arrow-2")->setPosition(p2->getPositionX() + 30, p2->getPositionY());
     }
 
     adjustScroll();
