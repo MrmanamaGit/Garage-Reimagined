@@ -7,8 +7,8 @@ bool garage::init() {
     auto scrollSize = CCSize{winSize.width / 2, winSize.height};
     auto f = m_fields.self();
 
-	m_rightArrow->setPositionX(winSize.width + 25);
-    m_leftArrow->setPositionX(-50);
+	m_rightArrow->setVisible(false);
+    m_leftArrow->setVisible(false);
     this->getChildByID("select-background")->setVisible(false);
 	this->getChildByID("tap-more-hint")->setVisible(false);
 	this->getChildByID("bottom-right-corner")->setVisible(false);
@@ -209,7 +209,6 @@ bool garage::init() {
 return true;
 }
 
-// Change the signature of hideOverlaps to accept a float parameter
 void garage::hideOverlaps(float dt) {
     if (auto node = this->getChildByID("hiimjustin000.more_icons/icon-selection-bar")) node->setVisible(false);
     if (auto node = static_cast<CCMenu*>(this->getChildByID("hiimjustin000.more_icons/navdot-menu"))) node->setOpacity(false);

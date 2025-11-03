@@ -11,7 +11,7 @@ void garage::onIcon(CCObject* sender) {
 
     if (gm->isIconUnlocked(itemID, m_iconType)) {
 
-        if (MoreIcons::activeIcon(m_iconType, is2p) == "") {
+        if (MoreIcons::activeIcon(m_iconType, is2p).empty()) {
             if (!is2p && itemID == gm->activeIconForType(m_iconType)) { // checks if the icon that was clicked on should display the unlock popup if player 1 has it already selected
 
                 showUnlockPopup(itemID, gm->iconTypeToUnlockType(m_iconType));
@@ -61,7 +61,7 @@ void garage::onShipFire(CCObject* sender) {
 
     if (gm->isIconUnlocked(itemID, IconType::ShipFire)) {
 
-        if (MoreIcons::activeIcon(IconType::ShipFire, is2p) == "") {
+        if (MoreIcons::activeIcon(IconType::ShipFire, is2p).empty()) {
             if (!is2p && itemID == gm->activeIconForType(IconType::ShipFire)) { // checks if the shipFire that was clicked on should display the unlock popup if player 1 has it already selected
 
                 showUnlockPopup(itemID, gm->iconTypeToUnlockType(IconType::ShipFire));
