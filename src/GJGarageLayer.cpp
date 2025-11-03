@@ -77,9 +77,11 @@ bool garage::init() {
 		Player Stage
 	*/
 
-    m_playerObject->setPosition({categoryMenu->getPositionX() / 2, 200});
-    this->getChildByID("floor-line")->setPosition(categoryMenu->getPositionX() / 2, 175);
-	this->getChildByID("floor-line")->setScaleX(0.35f);
+    auto flrLine = this->getChildByID("floor-line");
+
+    m_playerObject->setPosition({flrLine->getPositionX() + 30, 200});
+    flrLine->setPosition(categoryMenu->getPositionX() / 2, 175);
+	flrLine->setScaleX(0.35f);
 
     if (auto greyUsernameLock = getChildByID("username-lock")) {
 
@@ -173,7 +175,7 @@ bool garage::init() {
     if (f->SEPARATE_DUAL_ENABLED) {
         m_playerObject->setPosition({60,195.5});
         auto p2 = this->getChildByID("player2-icon");
-        p2->setPosition(120,195.5f);
+        p2->setPosition(flrLine->getPositionX() + 30,195.5f);
         m_playerObject->setScale(1.3f);
         p2->setScale(1.3f);
 
