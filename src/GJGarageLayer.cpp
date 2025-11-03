@@ -82,7 +82,7 @@ bool garage::init() {
     flrLine->setPosition(categoryMenu->getPositionX() / 2, 175);
 	flrLine->setScaleX(0.35f);
 
-    m_playerObject->setPosition({flrLine->getPositionX() - 30, 200});
+    m_playerObject->setPosition({flrLine->getPositionX(), 200});
 
     if (auto greyUsernameLock = getChildByID("username-lock")) {
 
@@ -174,9 +174,9 @@ bool garage::init() {
 
     // UI change when Separate dual icons are enabled
     if (f->SEPARATE_DUAL_ENABLED) {
-        m_playerObject->setPosition({60,195.5});
+        m_playerObject->setPosition({flrLine->getPositionX() - 30,195.5});
         auto p2 = this->getChildByID("player2-icon");
-        p2->setPosition(flrLine->getPositionX() + 30,195.5f);
+        p2->setPosition(flrLine->getPositionX() + 30, 195.5f);
         m_playerObject->setScale(1.3f);
         p2->setScale(1.3f);
 
