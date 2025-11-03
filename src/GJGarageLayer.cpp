@@ -79,9 +79,10 @@ bool garage::init() {
 
     auto flrLine = this->getChildByID("floor-line");
 
-    m_playerObject->setPosition({flrLine->getPositionX() + 30, 200});
     flrLine->setPosition(categoryMenu->getPositionX() / 2, 175);
 	flrLine->setScaleX(0.35f);
+
+    m_playerObject->setPosition({flrLine->getPositionX() - 30, 200});
 
     if (auto greyUsernameLock = getChildByID("username-lock")) {
 
